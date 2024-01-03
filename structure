@@ -1,0 +1,65 @@
+note-frontend/
+├── src/
+│   └── app/
+│       ├── components/   # Reusable UI components
+│       │   ├── Button.tsx
+│       │   ├── Form.tsx
+│       │   ├── Input.tsx
+│       │   ├── Layout.tsx  # Global layout component
+│       │   ├── Note.tsx    # Note list and individual note components
+│       │   └── ...
+│       ├── pages/        # Page components
+│       │   ├── _app.tsx       # Global application component
+│       │   ├── index.tsx      # Home page
+│       │   ├── login.tsx
+│       │   ├── register/page.tsx
+│       │   ├── notes.tsx      # List of notes
+│       │   ├── create-note.tsx
+│       │   ├── edit-note.tsx
+│       │   └── ...
+│       ├── styles/       # Global and component-specific styles
+│       │   ├── globals.css   # Includes `@tailwind` directives
+│       │   └── components/   # Component-specific styles (optional)
+│       │       ├── Note.css
+│       │       └── ...
+│       ├── types/        # TypeScript type definitions
+│       ├── utils/        # Utility functions
+│       ├── next.config.js   # Next.js configuration file
+│       ├── tailwind.config.js  # Tailwind CSS configuration file
+│       └── ... (other files)
+├── package.json
+└── tsconfig.json
+
+
+
+
+
+
+note-frontend/
+├── src/
+│   └── app/
+│       ├── components/   # Reusable UI components
+│       │   ├── Button.tsx
+│       │   ├── Form.tsx
+│       │   ├── Input.tsx
+│       │   ├── Layout.tsx  # Global layout component (if applicable)
+│       │   ├── Note.tsx    # Note list and individual note components
+│       │   └── ...
+│       ├── pages/        # Routes with page components
+│       │   ├── index/       # Home page route
+│       │   │   └── page.tsx
+│       │   ├── notes/       # Notes page route
+│       │   │   └── page.tsx
+│       │   ├── create-note/ # Create note route
+│       │   │   └── page.tsx
+│       │   └── ...
+│       ├── styles/       # Global and component-specific styles
+│       │   ├── globals.css
+│       │   └── components/   # Component-specific styles (optional)
+│       ├── types/        # TypeScript type definitions
+│       ├── utils/        # Utility functions
+│       ├── app.tsx        # The root App component defining routes
+│       ├── next.config.js   # Next.js configuration file
+│       └── tailwind.config.js  # Tailwind CSS configuration file
+├── package.json
+└── tsconfig.json
