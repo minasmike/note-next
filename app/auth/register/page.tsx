@@ -1,15 +1,40 @@
 'use client'
 import React from 'react';
-import AuthForm from '../components/authForm';
+import { useRouter } from 'next/navigation';
+import AuthForm from '../../components/authForm';
 import * as yup from 'yup';
 type FormValues = {
   username: string;
   password: string;
 };
 const RegisterPage: React.FC = () => {
+  const router = useRouter();
   const handleSubmit = (values: FormValues) => {
-    // Handle Register logic here
-    console.log('Register form submitted with values:', values);
+    // Handle login logic here
+    fetch('http://localhost:8080/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(values) // Remove the unnecessary object wrapping
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('This is the response from the backend:', data.success);
+        if (data.success) {
+          console.log("you have registered successfully.", data.success, data.user)
+          router.push('/auth/login', data.user.username);
+
+        } else {
+          console.error(data.error)
+        }
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    console.log('Login form submitted with values:', values);
   };
 
   const initialValues: FormValues = {
@@ -35,7 +60,7 @@ const RegisterPage: React.FC = () => {
               initialValues={initialValues}
               validationSchema={validationSchema}
               submitButtonText="Register"
-              linkToPage='/login'
+              linkToPage='/auth/login'
               linkName="Login"
               message="Already have an account. "
             />

@@ -1,15 +1,43 @@
 'use client'
 import React from 'react';
-import NoteForm from '../../components/noteForm';
+import { useParams } from "react-router-dom";
+import NoteForm from '../../../components/noteForm';
 import * as yup from 'yup';
+import { useRouter } from 'next/router';
 type FormValues = {
   title: string;
   body: string;
 };
 const EditNote: React.FC = () => {
+  // const router = useRouter();
+  // const { noteId } = router.query;
+  const { noteId } = useParams<{ noteId: any }>();
+  // Handle edit logic here
   const handleSubmit = (values: FormValues) => {
-    // Handle Register logic here
-    console.log('Note saved. Submitted with values:', values);
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
+    console.log("Note ID:", noteId)
+    fetch(`http://localhost:8080/notes/${noteId}`, {
+      method: 'PUT', // or 'PATCH' depending on your backend API
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+      },
+      body: JSON.stringify(values)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('This is the response from the backend:', data.success);
+        if (data.success) {
+          console.log('Note edited successfully.', data);
+          console.log(noteId);
+        } else {
+          console.error(data.error);
+          console.log(noteId);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   const initialValues: FormValues = {
@@ -35,7 +63,7 @@ const EditNote: React.FC = () => {
               initialValues={initialValues}
               validationSchema={validationSchema}
               submitButtonText="Edit Note"
-              
+
             />
           </div>
         </div>
