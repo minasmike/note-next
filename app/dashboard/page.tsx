@@ -2,70 +2,80 @@
 import React, { useEffect, useState } from 'react';
 import NoteCard from '../components/noteCard';
 import { useRouter } from 'next/navigation';
-import ResponsiveAppBar from '../components/navBar'
+import ResponsiveAppBar from '../components/navBar';
+
+interface Note {
+    id: number;
+    title: string;
+    // Add other properties of the note object
+}
 
 const Dashboard = () => {
-    interface Note {
-        id: number;
-        title: string;
-
-        // Add other properties of the note object
-    }
-
     const [notes, setNotes] = useState<Note[]>([]);
     const token = localStorage.getItem('token');
     const [success, setSuccess] = useState(true);
     const router = useRouter();
-    useEffect(() => {
-        // Retrieve the token from local storage
 
-        // Handle login logic here
+    useEffect(() => {
         fetch('http://localhost:8080/notes', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+                Authorization: `Bearer ${token}`,
             },
-
         })
             .then(response => response.json())
             .then(data => {
                 console.log('This is the response from the backend:', data.success);
                 setSuccess(data.success);
                 if (data.success) {
-                    console.log('You have feteched all notes successfully.', data.notes);
+                    console.log('You have fetched all notes successfully.', data.notes);
                     setNotes(data.notes);
-                    console.log("Notes: ", notes);
-
-
                 } else {
                     console.error(data.error);
-                    console.log("Notes: ", notes);
                 }
             })
             .catch(error => {
                 console.error(error);
             });
     }, []);
-    // const handleOpen = () => {
-    //     console.log("Open clicked");
-    // };
 
-    // const handleEdit = () => {
-    //     console.log("Edit clicked");
-    // };
+    const handleDelete = (noteId: number) => {
+        console.log("Delete clicked");
+        const token = localStorage.getItem('token');
 
-    // const handleDelete = () => {
-    //     console.log("Delete clicked");
-    // };
+        fetch(`http://localhost:8080/notes/${noteId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('This is the response from the backend:', data.success);
+                if (data.success) {
+                    console.log('You have Deleted a note successfully.', data);
+                    // Update the notes state by filtering out the deleted note
+                    setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
+                } else {
+                    console.error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    };
+
     const handleRedirectToLogin = () => {
         router.push('/auth/login');
     };
 
-
     return (
         <div>
-            <div><ResponsiveAppBar /></div>
+            <div>
+                <ResponsiveAppBar />
+            </div>
             <div className='text-8xl flex flex-col  mt-8 font-extrabold'>
                 <h1 className='flex justify-center mb-6'>Dashboard</h1>
                 <>
@@ -77,12 +87,8 @@ const Dashboard = () => {
                                         <NoteCard
                                             id={index}
                                             key={index}
-                                            noteId={note.id}
                                             title={note.title}
-                                        // onOpen={handleOpen}
-                                        // onEdit={handleEdit}
-                                        // onDelete={handleDelete}
-                                        />
+                                            onDelete={() => handleDelete(note.id)} noteId={0} />
                                     ))}
                                 </div>
                             ) : (
@@ -95,10 +101,9 @@ const Dashboard = () => {
                         handleRedirectToLogin()
                     )}
                 </>
-
             </div>
         </div>
     );
-}
+};
 
 export default Dashboard;
