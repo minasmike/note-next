@@ -8,8 +8,29 @@ type FormValues = {
 };
 const createNote: React.FC = () => {
   const handleSubmit = (values: FormValues) => {
-    // Handle Register logic here
-    console.log('Note saved. Submitted with values:', values);
+    const token = localStorage.getItem('token'); // Retrieve the token from local storage
+
+    // Handle login logic here
+    fetch('http://localhost:8080/notes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // Include the token in the Authorization header
+      },
+      body: JSON.stringify(values)
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('This is the response from the backend:', data.success);
+        if (data.success) {
+          console.log('You have created a note successfully.', data);
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
   };
 
   const initialValues: FormValues = {
@@ -35,7 +56,7 @@ const createNote: React.FC = () => {
               initialValues={initialValues}
               validationSchema={validationSchema}
               submitButtonText="Create Note"
-              
+
             />
           </div>
         </div>

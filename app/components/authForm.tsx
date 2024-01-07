@@ -90,7 +90,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                 </div>
             </div>
             <div className="flex justify-end pt-12">
-                <SubmitButton text={submitButtonText} disabled={!formik.isValid || formik.isSubmitting} />
+                <SubmitButton text={submitButtonText} disabled={false} />
             </div>
             <div className='pt-8 text-xl'>
                 <span className='-ml-8 text-black font-light'>{message}</span><Link href={linkToPage} className='text-blue-400 underline font-bold' >{linkName} </Link>
