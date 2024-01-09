@@ -3,17 +3,19 @@ import React, { useEffect, useState } from 'react';
 import NoteCard from '../components/noteCard';
 import { useRouter } from 'next/navigation';
 import ResponsiveAppBar from '../components/navBar';
+import AlertDialogSlide from '../components/confirmationDialog';
 
 interface Note {
     id: number;
     title: string;
-    // Add other properties of the note object
 }
 
 const Dashboard = () => {
     const [notes, setNotes] = useState<Note[]>([]);
     const token = localStorage.getItem('token');
     const [success, setSuccess] = useState(true);
+    const [deletingNote, setDeletingNote] = useState<Note | null>(null); // Store the entire note object
+    const [openConfirmation, setOpenConfirmation] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -40,11 +42,23 @@ const Dashboard = () => {
             });
     }, []);
 
-    const handleDelete = (noteId: number) => {
+    const handleDelete = (note: Note) => {
+        setDeletingNote(note);
+        setOpenConfirmation(true);
+    };
+    const handleOpen = () => {
+        console.log("open")
+    }
+
+    const handleEdit = () => {
+
+    }
+
+    const performDelete = (note: Note) => {
         console.log("Delete clicked");
         const token = localStorage.getItem('token');
 
-        fetch(`http://localhost:8080/notes/${noteId}`, {
+        fetch(`http://localhost:8080/notes/${note.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -57,7 +71,7 @@ const Dashboard = () => {
                 if (data.success) {
                     console.log('You have Deleted a note successfully.', data);
                     // Update the notes state by filtering out the deleted note
-                    setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
+                    setNotes(prevNotes => prevNotes.filter(n => n.id !== note.id));
                 } else {
                     console.error(data.error);
                 }
@@ -88,7 +102,11 @@ const Dashboard = () => {
                                             id={index}
                                             key={index}
                                             title={note.title}
-                                            onDelete={() => handleDelete(note.id)} noteId={0} />
+                                            onOpen={() => handleOpen()}
+                                            onEdit={() => handleEdit()}
+                                            onDelete={() => handleDelete(note)}
+                                            noteId={0}
+                                        />
                                     ))}
                                 </div>
                             ) : (
@@ -102,6 +120,19 @@ const Dashboard = () => {
                     )}
                 </>
             </div>
+
+            {deletingNote && (
+                <AlertDialogSlide
+                    title={deletingNote.title}
+                    openConfirmation={openConfirmation}
+                    setopenConfirmation={setOpenConfirmation}
+                    onDelete={() => {
+                        performDelete(deletingNote);
+                        setDeletingNote(null);
+
+                    }}
+                />
+            )}
         </div>
     );
 };

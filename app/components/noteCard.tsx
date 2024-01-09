@@ -4,17 +4,13 @@ interface CardProps {
     title: string;
     id: number;
     noteId: number;
+    onOpen: () => void;
+    onEdit: () => void;
     onDelete: () => void;
 }
 
-const Card: FC<CardProps> = ({ title, id, onDelete }) => {
-    const handleOpen = () => {
-        console.log("Open clicked ");
-    };
+const Card: FC<CardProps> = ({ title, id, onOpen, onEdit, onDelete }) => {
 
-    const handleEdit = () => {
-        console.log("Edit clicked");
-    };
 
     return (
         <div className="w-full border rounded-md px-6 py-4" key={id}>
@@ -23,13 +19,13 @@ const Card: FC<CardProps> = ({ title, id, onDelete }) => {
                 <div className="flex items-center space-x-2">
                     <button
                         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-400"
-                        onClick={handleOpen}
+                        onClick={onOpen}
                     >
                         Open
                     </button>
                     <button
                         className="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-400"
-                        onClick={handleEdit}
+                        onClick={onEdit}
                     >
                         Edit
                     </button>
