@@ -1,21 +1,63 @@
 'use client'
 import React from 'react';
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from 'react';
+// import { useParams } from "react-router-dom";
 import NoteForm from '../../../components/noteForm';
 import * as yup from 'yup';
-import { useRouter } from 'next/router';
+import { useParams, useRouter } from 'next/navigation';
+import { Router } from 'next/router';
 type FormValues = {
   title: string;
   body: string;
 };
+interface Note {
+  id: number;
+  title: string;
+  body: string;
+}
+
+interface NoteResponse {
+  success: boolean,
+  error?: string,
+  note: Note
+}
+
 const EditNote: React.FC = () => {
+  const [note, setNote] = useState<Note>();
+  const token = localStorage.getItem('token');
+  const [success, setSuccess] = useState(true);
+  const router = useRouter();
   // const router = useRouter();
-  // const { noteId } = router.query;
-  const { noteId } = useParams<{ noteId: any }>();
+  const { noteId } = useParams<{ noteId: string; }>();
   // Handle edit logic here
+  useEffect(() => {
+    console.log("first: ", noteId)
+    fetch(`http://localhost:8080/notes/${noteId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(response => response.json() as Promise<NoteResponse>)
+      .then(data => {
+        console.log('This is the response from the backend:', data.success);
+        setSuccess(data.success);
+        if (data.success) {
+          console.log('You have fetched the note successfully.', data.note);
+          setNote(data.note);
+        } else {
+          console.error(data.error);
+        }
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
+
   const handleSubmit = (values: FormValues) => {
     const token = localStorage.getItem('token'); // Retrieve the token from local storage
-    console.log("Note ID:", noteId)
+    console.log("Updated values:", values)
     fetch(`http://localhost:8080/notes/${noteId}`, {
       method: 'PUT', // or 'PATCH' depending on your backend API
       headers: {
@@ -30,6 +72,7 @@ const EditNote: React.FC = () => {
         if (data.success) {
           console.log('Note edited successfully.', data);
           console.log(noteId);
+          router.push('../../../dashboard')
         } else {
           console.error(data.error);
           console.log(noteId);
@@ -40,9 +83,13 @@ const EditNote: React.FC = () => {
       });
   };
 
+  if (!note) {
+    return <div>Loading...</div>
+  }
+
   const initialValues: FormValues = {
-    title: '',
-    body: '',
+    title: note.title,
+    body: note.body,
   };
 
   const validationSchema = yup.object().shape({

@@ -50,8 +50,8 @@ const Dashboard = () => {
         console.log("open")
     }
 
-    const handleEdit = () => {
-
+    const handleEdit = (noteId: number) => {
+        router.push(`/note/edit/${noteId}`)
     }
 
     const performDelete = (note: Note) => {
@@ -103,7 +103,7 @@ const Dashboard = () => {
                                             key={index}
                                             title={note.title}
                                             onOpen={() => handleOpen()}
-                                            onEdit={() => handleEdit()}
+                                            onEdit={() => handleEdit(note.id)}
                                             onDelete={() => handleDelete(note)}
                                             noteId={0}
                                         />
