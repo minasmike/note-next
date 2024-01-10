@@ -2,11 +2,14 @@
 import React from 'react';
 import NoteForm from '../../components/noteForm';
 import * as yup from 'yup';
+import { useRouter } from 'next/navigation';
+import next from 'next';
 type FormValues = {
   title: string;
   body: string;
 };
 const createNote: React.FC = () => {
+  const router = useRouter();
   const handleSubmit = (values: FormValues) => {
     const token = localStorage.getItem('token'); // Retrieve the token from local storage
 
@@ -24,6 +27,7 @@ const createNote: React.FC = () => {
         console.log('This is the response from the backend:', data.success);
         if (data.success) {
           console.log('You have created a note successfully.', data);
+          router.push("../../dashboard")
         } else {
           console.error(data.error);
         }

@@ -24,7 +24,7 @@ interface NoteResponse {
 
 const EditNote: React.FC = () => {
   const [note, setNote] = useState<Note>();
-  const token = localStorage.getItem('token');
+
   const [success, setSuccess] = useState(true);
   const router = useRouter();
   // const router = useRouter();
@@ -32,6 +32,7 @@ const EditNote: React.FC = () => {
   // Handle edit logic here
   useEffect(() => {
     console.log("first: ", noteId)
+    const token = localStorage.getItem('token');
     fetch(`http://localhost:8080/notes/${noteId}`, {
       method: 'GET',
       headers: {

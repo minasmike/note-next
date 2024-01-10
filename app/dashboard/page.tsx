@@ -2,23 +2,29 @@
 import React, { useEffect, useState } from 'react';
 import NoteCard from '../components/noteCard';
 import { useRouter } from 'next/navigation';
-import ResponsiveAppBar from '../components/navBar';
+import Navbar from '../components/navBar';
 import AlertDialogSlide from '../components/confirmationDialog';
 
 interface Note {
     id: number;
     title: string;
 }
+interface User {
+    id: number;
+    username: string;
+}
 
 const Dashboard = () => {
     const [notes, setNotes] = useState<Note[]>([]);
-    const token = localStorage.getItem('token');
+    const [user, setUser] = useState<User>();
     const [success, setSuccess] = useState(true);
     const [deletingNote, setDeletingNote] = useState<Note | null>(null); // Store the entire note object
     const [openConfirmation, setOpenConfirmation] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
+        // Fetch Notes
+        const token = localStorage.getItem('token');
         fetch('http://localhost:8080/notes', {
             method: 'GET',
             headers: {
@@ -36,6 +42,24 @@ const Dashboard = () => {
                 } else {
                     console.error(data.error);
                 }
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        // Fetch User Profile
+        fetch('http://localhost:8080/user/user-Profile', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('User Profile:', data.user);
+                // Process the user profile data and update state if needed
+                setUser(data.user);
             })
             .catch(error => {
                 console.error(error);
@@ -88,7 +112,7 @@ const Dashboard = () => {
     return (
         <div>
             <div>
-                <ResponsiveAppBar />
+                <Navbar />
             </div>
             <div className='text-8xl flex flex-col  mt-8 font-extrabold'>
                 <h1 className='flex justify-center mb-6'>Dashboard</h1>
