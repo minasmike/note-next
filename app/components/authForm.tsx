@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -7,8 +6,9 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import SubmitButton from './button';
+import Buttoncomponent from './button';
 import Link from 'next/link';
+
 type AuthFormProps = {
     onSubmit: (values: FormValues) => void;
     initialValues: FormValues;
@@ -17,7 +17,6 @@ type AuthFormProps = {
     linkToPage: string;
     linkName: string;
     message: string;
-
 };
 
 type FormValues = {
@@ -32,12 +31,14 @@ const AuthForm: React.FC<AuthFormProps> = ({
     submitButtonText,
     linkToPage,
     linkName,
-    message
+    message,
 }) => {
     const formik = useFormik({
         initialValues,
         validationSchema,
-        onSubmit,
+        onSubmit: (values) => {
+            onSubmit(values);
+        },
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +68,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
                         id="password"
                         size="medium"
                         className="w-full"
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         label="Password"
                         value={formik.values.password}
                         onChange={formik.handleChange}
@@ -90,10 +91,13 @@ const AuthForm: React.FC<AuthFormProps> = ({
                 </div>
             </div>
             <div className="flex justify-end pt-12">
-                <SubmitButton text={submitButtonText} disabled={false} />
+                <Buttoncomponent text={submitButtonText} disabled={false} onClickAction={formik.handleSubmit} />
             </div>
-            <div className='pt-8 text-xl'>
-                <span className='-ml-8 text-black font-light'>{message}</span><Link href={linkToPage} className='text-blue-400 underline font-bold' >{linkName} </Link>
+            <div className="pt-8 text-xl">
+                <span className="-ml-8 text-black font-light">{message}</span>
+                <Link href={linkToPage} className="text-blue-400 underline font-bold">
+                    {linkName}{' '}
+                </Link>
             </div>
         </form>
     );

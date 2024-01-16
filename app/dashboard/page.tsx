@@ -1,5 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
+import AccordionCard from '../components/accordionCard';
 import NoteCard from '../components/noteCard';
 import { useRouter } from 'next/navigation';
 import Navbar from '../components/navBar';
@@ -8,6 +9,7 @@ import AlertDialogSlide from '../components/confirmationDialog';
 interface Note {
     id: number;
     title: string;
+    body: string;
 }
 interface User {
     id: number;
@@ -16,8 +18,10 @@ interface User {
 
 const Dashboard = () => {
     const [notes, setNotes] = useState<Note[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    // const [successDataFetch, setSuccessDataFetch] = useState(false);
     const [user, setUser] = useState<User>();
-    const [success, setSuccess] = useState(true);
+    const [success, setSuccess] = useState(false);
     const [deletingNote, setDeletingNote] = useState<Note | null>(null); // Store the entire note object
     const [openConfirmation, setOpenConfirmation] = useState(false);
     const router = useRouter();
@@ -35,6 +39,8 @@ const Dashboard = () => {
             .then(response => response.json())
             .then(data => {
                 console.log('This is the response from the backend:', data.success);
+                // setSuccessDataFetch(data.success);
+                setIsLoading(false);
                 setSuccess(data.success);
                 if (data.success) {
                     console.log('You have fetched all notes successfully.', data.notes);
@@ -114,49 +120,60 @@ const Dashboard = () => {
             <div>
                 <Navbar />
             </div>
-            <div className='text-8xl flex flex-col  mt-8 font-extrabold'>
-                <h1 className='flex justify-center mb-6'>Dashboard</h1>
-                <>
-                    {success ? (
-                        <>
-                            {notes.length > 0 ? (
-                                <div className='text-6xl font-normal'>
-                                    {notes.map((note, index) => (
-                                        <NoteCard
-                                            id={index}
-                                            key={index}
-                                            title={note.title}
-                                            onOpen={() => handleOpen()}
-                                            onEdit={() => handleEdit(note.id)}
-                                            onDelete={() => handleDelete(note)}
-                                            noteId={0}
-                                        />
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className='flex justify-center items-center font-bold text-6xl text-red-600 h-screen -m-24'>
-                                    NO NOTE TO SHOW!
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        handleRedirectToLogin()
-                    )}
-                </>
+            <div className=" flex flex-col font-extrabold">
+                <h1 className="flex justify-center mb-6 text-4xl sm:text-6xl">All Notes</h1>
+                {isLoading && !success && (
+                    <div className="flex justify-center items-center font-bold text-6xl text-white h-screen -m-24">
+                        <div className="flex flex-col items-center mt-6 w-full">
+                            <p className="text-center mb-16 text-3xl sm:text-6xl">Loading Notes  . . . .</p>
+                            <div className="flex flex-col gap-4 w-full max-w-lg">
+                                <div className="skeleton h-14"></div>
+                                <div className="skeleton h-14"></div>
+                                <div className="skeleton h-14"></div>
+                                <div className="skeleton h-14"></div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {!isLoading && success && (
+                    <>
+                        {notes.length > 0 ? (
+                            <div className="flex flex-col justify-center items-center">
+                                {notes.map((note, index) => (
+                                    <AccordionCard
+                                        id={index}
+                                        key={index}
+                                        title={note.title}
+                                        body={note.body}
+                                        onOpen={() => handleOpen()}
+                                        onEdit={() => handleEdit(note.id)}
+                                        onDelete={() => handleDelete(note)}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="flex justify-center items-center font-bold text-6xl text-red-600 h-screen -m-24">
+                                NO NOTE TO SHOW!
+                            </div>
+                        )}
+                    </>
+                )}
+                {!isLoading && !success && (
+                    <>{handleRedirectToLogin()}</>
+                )}
+
+                {deletingNote && (
+                    <AlertDialogSlide
+                        title={deletingNote.title}
+                        openConfirmation={openConfirmation}
+                        setopenConfirmation={setOpenConfirmation}
+                        onDelete={() => {
+                            performDelete(deletingNote);
+                            setDeletingNote(null);
+                        }}
+                    />
+                )}
             </div>
-
-            {deletingNote && (
-                <AlertDialogSlide
-                    title={deletingNote.title}
-                    openConfirmation={openConfirmation}
-                    setopenConfirmation={setOpenConfirmation}
-                    onDelete={() => {
-                        performDelete(deletingNote);
-                        setDeletingNote(null);
-
-                    }}
-                />
-            )}
         </div>
     );
 };

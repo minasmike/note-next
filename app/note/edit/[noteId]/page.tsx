@@ -1,11 +1,15 @@
 'use client'
 import React from 'react';
 import { useEffect, useState } from 'react';
-// import { useParams } from "react-router-dom";
+import Buttoncomponent from "../../../components/button";
 import NoteForm from '../../../components/noteForm';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import NavBar from '@/app/components/navBar';
 import * as yup from 'yup';
 import { useParams, useRouter } from 'next/navigation';
 import { Router } from 'next/router';
+import { Height } from '@mui/icons-material';
 type FormValues = {
   title: string;
   body: string;
@@ -24,7 +28,8 @@ interface NoteResponse {
 
 const EditNote: React.FC = () => {
   const [note, setNote] = useState<Note>();
-
+  const [bodyValue, setBodyValue] = useState('');
+  const [titleValue, setTitleValue] = useState('');
   const [success, setSuccess] = useState(true);
   const router = useRouter();
   // const router = useRouter();
@@ -47,6 +52,8 @@ const EditNote: React.FC = () => {
         if (data.success) {
           console.log('You have fetched the note successfully.', data.note);
           setNote(data.note);
+          setBodyValue(data.note.body)
+          setTitleValue(data.note.title)
         } else {
           console.error(data.error);
         }
@@ -85,7 +92,27 @@ const EditNote: React.FC = () => {
   };
 
   if (!note) {
-    return <div>Loading...</div>
+    return (
+      <div className='flex justify-center mt-6'>
+        <div className="flex flex-col gap-4 w-4/5 ">
+          <div className="skeleton h-64 w-full"></div>
+          <div className="skeleton h-14 w-1/3"></div>
+          <div className="skeleton h-14 w-1/2"></div>
+          <div className="skeleton h-14 w-3/4"></div>
+          <div className="skeleton h-14 w-4/5"></div>
+          <div className="skeleton h-14 w-full"></div>
+          <div className="skeleton h-14 w-full"></div>
+          <div className="skeleton h-14 w-full"></div>
+        </div>
+
+
+
+      </div>
+
+
+
+
+    )
   }
 
   const initialValues: FormValues = {
@@ -99,24 +126,51 @@ const EditNote: React.FC = () => {
   });
 
   return (
-    <div className='min-h-screen flex flex-col  justify-center bg-red-500'>
-      <h1 className="text-8xl font-bold flex justify-center py-2 text-yellow-200">Note App</h1>
-      <div className="flex  justify-left h-screen">
-        <div className="flex justify-left flex-grow w-full">
+    <div className='bg-gray-200 flex-grow h-full'>
+      <NavBar />
+      <div className='min-h-full flex flex-col  justify-center '>
 
-          <div className="bg-gray-300 pt-8 px-24 rounded-lg w-full">
-            <h1 className="text-4xl font-bold flex justify-center pb-12 text-black">Edit Note</h1>
-            <NoteForm
-              onSubmit={handleSubmit}
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              submitButtonText="Edit Note"
+        <div className="flex  justify-left h-full">
+          <div className="flex justify-left flex-grow w-full">
 
-            />
+            <div className=" pt-8 px-24 rounded-lg w-full bg-b">
+              <h1 className="text-4xl font-bold flex justify-center pb-12 text-black">Edit Note</h1>
+              {/* <NoteForm
+                onSubmit={handleSubmit}
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                submitButtonText="Edit Note"
+
+              /> */}
+
+              <label className="form-control w-3/4">
+                <div className="label">
+                  <span className="label-text">Title</span>
+
+                </div>
+                <input type="text" placeholder="Title" className="input input-bordered  w-full bg-gray-100" value={titleValue} onChange={(event) => setTitleValue(event.target.value)} />
+                <div className="label">
+                  <span className="label-text-alt"></span>
+                  <span className="label-text-alt"></span>
+                </div>
+              </label>
+              <ReactQuill theme="snow" value={bodyValue} onChange={setBodyValue} style={{ height: "740px" }} className='bg-gray-100 large-editor' placeholder={initialValues.body} />
+              <div className='flex justify-end my-8'>
+                <Buttoncomponent
+                  disabled={false}
+                  text='Save Edit'
+                  onClickAction={() => handleSubmit({ title: titleValue, body: bodyValue })}
+                  className='bg-green-300 mt-8 hover:bg-green-400'
+                /></div>
+
+
+            </div>
           </div>
         </div>
       </div>
+
     </div>
+
   );
 };
 

@@ -6,7 +6,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import SubmitButton from './button';
+import Buttoncomponent from './button';
 import Link from 'next/link';
 
 type noteFormProps = {
@@ -43,7 +43,7 @@ const NoteForm: React.FC<noteFormProps> = ({
                         id="title"
                         size="medium"
                         className="w-full"
-                        label="title"
+                        label="Title"
                         variant="outlined"
                         fullWidth
                         value={formik.values.title}
@@ -57,21 +57,21 @@ const NoteForm: React.FC<noteFormProps> = ({
                         id="body"
                         size="medium"
                         className="w-full"
-                        label="body"
+                        label="Body"
                         fullWidth
                         value={formik.values.body}
                         onChange={formik.handleChange}
                         multiline
-                        rows={20}
+                        rows={15}
                         error={formik.touched.body && Boolean(formik.errors.body)}
                         helperText={formik.touched.body && formik.errors.body}
                     />
                 </div>
             </div>
             <div className="flex justify-end pt-12">
-                <SubmitButton text={submitButtonText} disabled={!formik.isValid || formik.isSubmitting} />
+                <Buttoncomponent text={submitButtonText} disabled={!formik.isValid || formik.isSubmitting} onClickAction={formik.handleSubmit} />
             </div>
-            
+
         </form>
     );
 };

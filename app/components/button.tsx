@@ -1,18 +1,18 @@
-'use client'
 import React from 'react';
 
-
-type SubmitButtonProps = {
+type ButtoncomponentProps = {
   text: string;
+  onClickAction: () => void;
   disabled: boolean;
+  className?: string;
 };
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({ text, disabled }) => {
+const Buttoncomponent: React.FC<ButtoncomponentProps> = ({ text, onClickAction, disabled, className }) => {
   return (
-    <button color="primary" type="submit" disabled={disabled}>
+    <button className={`btn btn-xs sm:btn-sm md:btn-md lg:btn-lg ${className}`} disabled={disabled} onClick={onClickAction}>
       {text}
     </button>
   );
 };
 
-export default SubmitButton;
+export default Buttoncomponent;
