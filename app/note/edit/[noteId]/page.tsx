@@ -1,15 +1,11 @@
 'use client'
 import React from 'react';
 import { useEffect, useState } from 'react';
-import Buttoncomponent from "../../../components/button";
-import NoteForm from '../../../components/noteForm';
-import ReactQuill from 'react-quill';
+import NoteForm from '@/app/components/noteForm';
 import 'react-quill/dist/quill.snow.css';
 import NavBar from '@/app/components/navBar';
 import * as yup from 'yup';
 import { useParams, useRouter } from 'next/navigation';
-import { Router } from 'next/router';
-import { Height } from '@mui/icons-material';
 type FormValues = {
   title: string;
   body: string;
@@ -25,6 +21,7 @@ interface NoteResponse {
   error?: string,
   note: Note
 }
+
 
 const EditNote: React.FC = () => {
   const [note, setNote] = useState<Note>();
@@ -104,14 +101,7 @@ const EditNote: React.FC = () => {
           <div className="skeleton h-14 w-full"></div>
           <div className="skeleton h-14 w-full"></div>
         </div>
-
-
-
       </div>
-
-
-
-
     )
   }
 
@@ -128,42 +118,21 @@ const EditNote: React.FC = () => {
   return (
     <div className='bg-gray-200 flex-grow h-full'>
       <NavBar />
-      <div className='min-h-full flex flex-col  justify-center '>
+      <div className=' flex flex-col  justify-center '>
 
-        <div className="flex  justify-left h-full">
+        <div className="flex  justify-left">
           <div className="flex justify-left flex-grow w-full">
 
             <div className=" pt-8 px-24 rounded-lg w-full bg-b">
               <h1 className="text-4xl font-bold flex justify-center pb-12 text-black">Edit Note</h1>
-              {/* <NoteForm
+              <NoteForm
                 onSubmit={handleSubmit}
                 initialValues={initialValues}
                 validationSchema={validationSchema}
-                submitButtonText="Edit Note"
-
-              /> */}
-
-              <label className="form-control w-3/4">
-                <div className="label">
-                  <span className="label-text">Title</span>
-
-                </div>
-                <input type="text" placeholder="Title" className="input input-bordered  w-full bg-gray-100" value={titleValue} onChange={(event) => setTitleValue(event.target.value)} />
-                <div className="label">
-                  <span className="label-text-alt"></span>
-                  <span className="label-text-alt"></span>
-                </div>
-              </label>
-              <ReactQuill theme="snow" value={bodyValue} onChange={setBodyValue} style={{ height: "740px" }} className='bg-gray-100 large-editor' placeholder={initialValues.body} />
-              <div className='flex justify-end my-8'>
-                <Buttoncomponent
-                  disabled={false}
-                  text='Save Edit'
-                  onClickAction={() => handleSubmit({ title: titleValue, body: bodyValue })}
-                  className='bg-green-300 mt-8 hover:bg-green-400'
-                /></div>
+                submitButtonText="Save Edit"
 
 
+              />
             </div>
           </div>
         </div>

@@ -29,7 +29,7 @@ const NavBar = () => {
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
                     <li className='hover:font-extrabold hover:text-white'><a>Dashboard</a></li>
-                    <li className='hover:font-extrabold hover:text-white'><a href='http://locahost:3000/note/create'>Create Note</a></li>
+                    <li className='hover:font-extrabold hover:text-white'><a href='../note/create'>Create Note</a></li>
                     <li className='hover:font-extrabold hover:text-white'><a>Settings 1</a></li>
                 </ul>
             </div>

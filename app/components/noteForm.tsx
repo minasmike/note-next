@@ -1,21 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Buttoncomponent from './button';
-import Link from 'next/link';
 
 type noteFormProps = {
     onSubmit: (values: FormValues) => void;
     initialValues: FormValues;
     validationSchema: yup.ObjectSchema<Partial<FormValues>>;
     submitButtonText: string;
-
-
 };
 
 type FormValues = {
@@ -36,13 +31,13 @@ const NoteForm: React.FC<noteFormProps> = ({
     });
 
     return (
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik.handleSubmit} className=''>
             <div className="space-y-8">
                 <div>
                     <TextField
                         id="title"
                         size="medium"
-                        className="w-full"
+                        className="w-full bg-gray-100"
                         label="Title"
                         variant="outlined"
                         fullWidth
@@ -53,23 +48,24 @@ const NoteForm: React.FC<noteFormProps> = ({
                     />
                 </div>
                 <div>
-                    <TextField
-                        id="body"
-                        size="medium"
-                        className="w-full"
-                        label="Body"
-                        fullWidth
+                    <ReactQuill
+                        theme="snow"
                         value={formik.values.body}
-                        onChange={formik.handleChange}
-                        multiline
-                        rows={15}
-                        error={formik.touched.body && Boolean(formik.errors.body)}
-                        helperText={formik.touched.body && formik.errors.body}
+                        onChange={(value) => formik.setFieldValue('body', value)}
+                        style={{ height: "620px" }} className='bg-gray-100 large-editor pb-10'
+                    />
+                    {formik.touched.body && formik.errors.body && (
+                        <span className="text-red-500">{formik.errors.body}</span>
+                    )}
+                </div>
+                <div className="flex justify-end">
+                    <Buttoncomponent
+                        text={submitButtonText}
+                        disabled={!formik.isValid || formik.isSubmitting}
+                        onClickAction={formik.handleSubmit}
+                        className="bg-white font-bold text-green-400 hover:bg-green-400 hover:font-extrabold hover:text-white"
                     />
                 </div>
-            </div>
-            <div className="flex justify-end pt-12">
-                <Buttoncomponent text={submitButtonText} disabled={!formik.isValid || formik.isSubmitting} onClickAction={formik.handleSubmit} />
             </div>
 
         </form>
